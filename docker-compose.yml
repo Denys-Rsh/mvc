@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+    php:
+        build:
+            context: ./prj-docker/php/8.1
+        volumes:
+            - "./:/var/www/html/"
+            - "./prj-docker/fs/php/home:/home/www-data"
+    mysql:
+        image: mysql:8.0
+        volumes:
+            - "./prj-docker/fs/mysql:/var/lib/mysql"
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        ports:
+            - 3306:3306
+    nginx:
+        image: nginx
+        environment:
+            - NGINX_HOST=${NGINX_HOST}
+            - NGINX_PORT=${NGINX_PORT}
+            - NGINX_ROOT=${APP_HOME}
+        ports:
+            - 80:80
+        volumes:
+            - "./prj-docker/nginx/templates:/etc/nginx/templates"
+            - "./:/var/www/html:ro"
